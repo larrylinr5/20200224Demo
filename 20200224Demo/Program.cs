@@ -1,4 +1,7 @@
-﻿using NLog;
+﻿using _20200224Demo.Mappings;
+using _20200224Demo.Models;
+using AutoMapper;
+using NLog;
 using Unity;
 using Unity.RegistrationByConvention;
 
@@ -37,6 +40,49 @@ namespace _20200224Demo
             //logger.Warn("我是警告:Warn");
             //logger.Error("我是錯誤:error");
             //logger.Fatal("我是致命錯誤:Fatal");
+
+
+
+            //automapper未使用時的程式碼-----------------------------------------
+            var amodel = new AModel
+            {
+                Name = "Jeff",
+                No = 123
+            };
+            var bmodel = new BModel
+            {
+                Name = amodel.Name,
+                No = amodel.No
+            };
+            //automapper未使用時的程式碼-----------------------------------------
+
+            //加了auto-----------------------------------
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<AModel, BModel>());
+            var mapper = config.CreateMapper();
+
+            var amodel2 = new AModel
+            {
+                Name = "Jeff",
+                No = 123
+            };
+            var bmodel3 = mapper.Map<BModel>(amodel2);
+            //加了auto-----------------------------------
+
+            //透過AddProfile增加多組mapping----------------------------------------
+            var config2 = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<AModel, BModel>();
+                cfg.AddProfile<BModelProfile>();
+            });
+            var mapper2 = config2.CreateMapper();
+
+            var amodel4 = new AModel
+            {
+                Name = "Jeff",
+                No = 123
+            };
+            var bmodel4 = mapper.Map<BModel>(amodel4);
+            //透過AddProfile增加多組mapping----------------------------------------
         }
     }
 }
